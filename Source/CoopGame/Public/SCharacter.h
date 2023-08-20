@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
 {
@@ -18,6 +21,21 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void MoveForward(float Value);
+
+	void MoveRight(float Value);
+
+	void BeginCrouch();
+
+	void EndCrouch();
+
+
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,Category="Components")//仅能通过在构造函数中创建实例，而后将其添加为属性，并非直接输入一个全新的对象
+	UCameraComponent* CameraComp;
+
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere,Category="Components")
+	USpringArmComponent* SpringArmComp;
 
 public:	
 	// Called every frame
