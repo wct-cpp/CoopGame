@@ -75,3 +75,13 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
 
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	//设置为摄像机位置
+	if (CameraComp) {
+		return CameraComp->GetComponentLocation();
+	}
+
+	return Super::GetPawnViewLocation();//若不存在摄像机，返回原本位置
+}
+
