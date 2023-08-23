@@ -36,15 +36,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	UParticleSystem* ExplosionFX;
 
-	UPROPERTY(VisibleAnywhere, EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float BaseDamage;
 
-	UPROPERTY(VisibleAnywhere, EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageRadius;
 
 	TSubclassOf<UDamageType> DamageType;
 
-	TArray<AActor*>& IgnoreActors;
+	TArray<AActor*> IgnoreActors;
 
 	UFUNCTION()
 	void Explode();
