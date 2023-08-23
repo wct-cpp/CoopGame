@@ -34,9 +34,6 @@ void ASWeapon::Fire()
 
 	AActor* MyOwner =GetOwner();
 	if (MyOwner) {
-
-
-
 		FVector EyeLocation;
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);//这个函数将眼睛的位置和角度传给eyeL/R 参数
