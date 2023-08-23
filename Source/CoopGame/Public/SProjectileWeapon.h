@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "SWeapon.h"
+#include "CoopGame/Public/SProjectile.h"
 #include "SProjectileWeapon.generated.h"
 
 class UProjectileMovementComponent;
 class USphereComponent;
-class ASProjectile;
 
 /**
  * 
@@ -29,7 +29,7 @@ public:
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<ASProjectile> ProjectileClass=ASProjectile::StaticClass();//需要为ProjectileClass分配一个有效的类或子类
 
 
 };

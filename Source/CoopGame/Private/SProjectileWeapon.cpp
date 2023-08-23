@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 
 
+
 ASProjectileWeapon::ASProjectileWeapon() {
 	Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
 }
@@ -27,7 +28,7 @@ void ASProjectileWeapon::Fire(){
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		ActorSpawnParams.Instigator = Pawn;
 		
-		GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, ActorSpawnParams);
+		GetWorld()->SpawnActor<ASProjectile>(ProjectileClass, MuzzleLocation, EyeRotation, ActorSpawnParams);
 	}
 
 	if (MuzzleEffect) {

@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ASProjectile::ASProjectile()
@@ -37,8 +38,20 @@ ASProjectile::ASProjectile()
 void ASProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	FTimerHandle TimerHandle;
-	//GetWorldTimerManager().SetTimer(TimerHandle, this, &ASProjectile::Explode, 3.0f, false);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASProjectile::Explode, 1.0f, false);
+}
+
+void ASProjectile::Explode()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, ExplosionFX, GetActorLocation(), FRotator::ZeroRotator, FVector(5.0f));
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageType, IgnoreActors, this, NULL, false);
+	UKismetSystemLibrary::DrawDebugSphere(GetWorld(),GetActorLocation(),DamageRadius,12,FLinearColor::Red,5.0f,5.0f);
+	// Allow BP to trigger additional logic
+	BlueprintExplode();
+
+	Destroy();
 }
 
