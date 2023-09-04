@@ -9,6 +9,21 @@
 class USkeletalMeshComponent;
 class UDamageType;
 class UParticleSystem;
+class UCameraShakeBase;
+
+//Contain information of a single hitscan weapon linetrace
+USTRUCT()
+struct FHitScanTrace
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	TEnumAsByte<EPhysicalSurface> SurfaceType;
+
+	UPROPERTY()
+	FVector_NetQuantize TraceTo;
+};
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -20,15 +35,15 @@ public:
 	ASWeapon();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
+	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Components")
 	USkeletalMeshComponent* MeshComp;
 
-	UFUNCTION(BlueprintCallable,Category="Weapon")
-	virtual void  Fire();
+	void PlayFireEffects(FVector TracerEnd);
+
+	void PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoint);
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Weapon")
 	TSubclassOf<UDamageType> DamageType;
@@ -43,12 +58,49 @@ protected:
 	FName TracerTargetName;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Weapon")
-	UParticleSystem* ImpactEffect;
+	UParticleSystem* DefaultImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Weapon")
+	UParticleSystem* FleshImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Weapon")
 	UParticleSystem* TracerEffect;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditDefaultsOnly,Category="Weapon")
+	TSubclassOf<UCameraShakeBase> FireCamShake;
+	UPROPERTY(EditDefaultsOnly,Category="Weapon")
+	float BaseDamage;
+
+	//UFUNCTION(BlueprintCallable, Category = "Weapon")
+	virtual void  Fire();
+	
+	UFUNCTION(Server,Reliable,WithValidation)
+	void ServerFire();
+
+	FTimerHandle TimerHandle_TimeBetweenShots;
+
+	float LastFireTime;
+
+	/*Bullets per minute fired by weapon*/
+	UPROPERTY(EditDefaultsOnly,Category="Weapon")
+	float RateOfFire;
+
+	//Derived from RateOfFire
+	float TimeBetweenShots;
+
+	UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
+	FHitScanTrace HitScanTrace;
+
+	/*Bullet Spread in Degrees*/
+	UPROPERTY(EditDefaultsOnly,Category="Weapon",meta=(ClampMin=0.0f))
+	float BulletSpread;
+
+	UFUNCTION()
+	void OnRep_HitScanTrace();
+public:	
+
+
+	void StopFire();
+
+	void StartFire();
 };
